@@ -6,6 +6,7 @@ const QuestionGenerator = {
     // Constants
     REPEAT_MAX: 20,
     DIFFICULTY_LEVELS: 5,
+    ONE_SINGLE_NUMBER: true,
     
     // Question history to avoid repetition
     questionHistory: [],
@@ -29,7 +30,12 @@ const QuestionGenerator = {
         // difficulty 1 (easiest) -> 50% level 3 questions
         // difficulty 5 (hardest) -> 100% level 3 questions
         const level3Percentage = 0.5 + (difficultyLevel - 1) * 0.125;
-        
+
+        // if difficultyLevel is max, set ONE_SINGLE_NUMBER to false
+        if (difficultyLevel === this.DIFFICULTY_LEVELS) {
+            this.ONE_SINGLE_NUMBER = false;
+        }
+
         const questions = [];
         
         for (let i = 0; i < questionCount; i++) {
@@ -47,7 +53,7 @@ const QuestionGenerator = {
                 const candidateQuestion = this.generateSingleQuestion(operation, maxNumber);
                 
                 // Determine the difficulty level of the generated question
-                const questionLevel = this.getDifficultyLevel(candidateQuestion);
+                const questionLevel = this.getDifficultyLevel(candidateQuestion, maxNumber);
                 
                 // Check if this question meets our difficulty criteria
                 const targetLevel = Math.random() < level3Percentage ? 3 : Math.floor(Math.random() * 3) + 1;
@@ -90,55 +96,67 @@ const QuestionGenerator = {
      */
     generateSingleQuestion: function(operation, maxNumber) {
         let num1, num2, answer;
-        
+
+        function getOperands(maxNumber, oneSingleNumber) {
+            if (oneSingleNumber) {
+                // At least one operand < 10
+                if (Math.random() < 0.5) {
+                    return [Utils.getRandomInt(1, 9), Utils.getRandomInt(1, maxNumber)];
+                } else {
+                    return [Utils.getRandomInt(1, maxNumber), Utils.getRandomInt(1, 9)];
+                }
+            } else {
+                return [Utils.getRandomInt(1, maxNumber), Utils.getRandomInt(1, maxNumber)];
+            }
+        }
+
         switch(operation) {
-            case 'addition':
-                // For addition, make sure sum is <= maxNumber
-                num2 = Utils.getRandomInt(1, maxNumber - 1);
-                num1 = Utils.getRandomInt(1, maxNumber - num2);
+            case 'addition': {
+                [num1, num2] = getOperands(maxNumber, this.ONE_SINGLE_NUMBER);
                 answer = num1 + num2;
                 break;
-                
-            case 'subtraction':
-                // For subtraction, make sure result is positive
-                num1 = Utils.getRandomInt(2, maxNumber);
-                num2 = Utils.getRandomInt(1, num1 - 1);
+            }
+            case 'subtraction': {
+                [num1, num2] = getOperands(maxNumber, this.ONE_SINGLE_NUMBER);
+                if (num2 > num1) {
+                    [num1, num2] = [num2, num1];
+                }
                 answer = num1 - num2;
                 break;
-                
-            case 'multiplication':
-                // For multiplication, make sure product is <= maxNumber
-                if (maxNumber < 4) {
-                    num1 = 1;
-                    num2 = 1;
-                } else {
-                    // Find two factors that multiply to <= maxNumber
-                    const maxFactor = Math.floor(Math.sqrt(maxNumber));
-                    num1 = Utils.getRandomInt(1, maxFactor);
-                    // Ensure num2 * num1 <= maxNumber
-                    const maxNum2 = Math.floor(maxNumber / num1);
-                    num2 = Utils.getRandomInt(1, maxNum2);
-                }
+            }
+            case 'multiplication': {
+                [num1, num2] = getOperands(maxNumber, this.ONE_SINGLE_NUMBER);
                 answer = num1 * num2;
                 break;
-                
-            case 'division':
-                // For division, ensure it's an exact division (no remainder)
-                // First pick the answer (within range)
-                answer = Utils.getRandomInt(1, Math.min(10, maxNumber));
-                // Then pick the second number (multiplier)
-                num2 = Utils.getRandomInt(1, Math.floor(maxNumber / answer));
-                // Calculate first number
-                num1 = answer * num2;
+            }
+            case 'division': {
+                // For division, ensure exact division and both operands <= maxNumber
+                if (this.ONE_SINGLE_NUMBER) {
+                    if (Math.random() < 0.5) {
+                        num2 = Utils.getRandomInt(1, 9);
+                        answer = Utils.getRandomInt(1, maxNumber);
+                    } else {
+                        num2 = Utils.getRandomInt(1, maxNumber);
+                        answer = Utils.getRandomInt(1, 9);
+                    }
+                } else {
+                    num2 = Utils.getRandomInt(1, maxNumber);
+                    answer = Utils.getRandomInt(1, maxNumber);
+                }
+                num1 = num2 * answer;
+                if (num1 > maxNumber) {
+                    num1 = maxNumber;
+                    answer = Math.floor(num1 / num2);
+                }
                 break;
-                
-            default:
-                num1 = Utils.getRandomInt(1, Math.floor(maxNumber / 2));
-                num2 = Utils.getRandomInt(1, Math.floor(maxNumber / 2));
+            }
+            default: {
+                [num1, num2] = getOperands(maxNumber, this.ONE_SINGLE_NUMBER);
                 answer = num1 + num2;
                 operation = 'addition';
+            }
         }
-        
+
         return {
             num1,
             num2,
@@ -155,7 +173,7 @@ const QuestionGenerator = {
      * @param {Object} question - Question object
      * @returns {number} - Difficulty level (1-3)
      */
-    getDifficultyLevel: function(question) {
+    getDifficultyLevel: function(question, maxNumber) {
         const { num1, num2, operation } = question;
         
         // If either number is less than 6, it's a level 1 question
@@ -163,7 +181,7 @@ const QuestionGenerator = {
             return 1;
         }
 
-        // if operation is subtraction, and the answer is less than 3
+        // if operation is subtraction, and the answer is less than 3, it's a level 1 question
         if (operation === 'subtraction' && question.answer < 3) {
             return 1;
         }
@@ -172,7 +190,12 @@ const QuestionGenerator = {
         if (num1 % 5 === 0 || num2 % 5 === 0) {
             return 2;
         }
-        
+
+        // if either maxNumber > 10 and one of the numbers is less than 10, it's a level 2 question
+        if (maxNumber > 10 && (num1 < 10 || num2 < 10)) {
+            return 2;
+        }
+
         // Otherwise it's a level 3 question
         return 3;
     },

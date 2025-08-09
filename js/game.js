@@ -3,6 +3,10 @@
  */
 
 const Game = {
+    // Event handler references for cleanup
+    _answerInputHandler: null,
+    _answerKeydownHandler: null,
+    _submitBtnHandler: null,
     // Game state
     settings: null,
     questions: [],
@@ -54,23 +58,36 @@ const Game = {
         // Update UI
         this.totalQuestionsIndicator.textContent = settings.questionCount;
         
-        // Setup answer submission
-        document.getElementById('submit-answer').addEventListener('click', () => this.submitAnswer());
-        this.answerInput.addEventListener('keydown', (e) => {
+        // Remove previous listeners if they exist
+        if (this._submitBtnHandler) {
+            document.getElementById('submit-answer').removeEventListener('click', this._submitBtnHandler);
+        }
+        if (this._answerKeydownHandler) {
+            this.answerInput.removeEventListener('keydown', this._answerKeydownHandler);
+        }
+        if (this._answerInputHandler) {
+            this.answerInput.removeEventListener('input', this._answerInputHandler);
+        }
+
+        // Define named handler functions
+        this._submitBtnHandler = () => this.submitAnswer();
+        this._answerKeydownHandler = (e) => {
             if (e.key === 'Enter') {
                 this.submitAnswer();
             }
-        });
-        
-        // Auto-check answer when correct
-        this.answerInput.addEventListener('input', () => {
+        };
+        this._answerInputHandler = () => {
             const userAnswer = parseInt(this.answerInput.value);
             const currentQuestion = this.getCurrentQuestion();
-            
             if (!isNaN(userAnswer) && userAnswer === currentQuestion.answer) {
                 this.submitAnswer();
             }
-        });
+        };
+
+        // Add listeners
+        document.getElementById('submit-answer').addEventListener('click', this._submitBtnHandler);
+        this.answerInput.addEventListener('keydown', this._answerKeydownHandler);
+        this.answerInput.addEventListener('input', this._answerInputHandler);
         
         // Show game screen
         Utils.showScreen('game-screen');
