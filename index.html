@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mira Maths - Flash Practice</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Mira Maths</h1>
+            <p>Flash Practice</p>
+        </header>
+
+        <main>
+            <section id="settings-screen" class="screen active">
+                <h2>Game Settings</h2>
+
+                <div class="settings-group">
+                    <h3>Choose Operations</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="addition" name="operation" value="addition" checked>
+                            <span class="custom-checkbox"></span>
+                            Addition (+)
+                        </label>
+                        <label>
+                            <input type="checkbox" id="subtraction" name="operation" value="subtraction">
+                            <span class="custom-checkbox"></span>
+                            Subtraction (-)
+                        </label>
+                        <label>
+                            <input type="checkbox" id="multiplication" name="operation" value="multiplication">
+                            <span class="custom-checkbox"></span>
+                            Multiplication (×)
+                        </label>
+                        <label>
+                            <input type="checkbox" id="division" name="operation" value="division">
+                            <span class="custom-checkbox"></span>
+                            Division (÷)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Maximum Number</h3>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="max-number" value="10">
+                            <span class="custom-radio"></span>
+                            10
+                        </label>
+                        <label>
+                            <input type="radio" name="max-number" value="20" checked>
+                            <span class="custom-radio"></span>
+                            20
+                        </label>
+                        <label>
+                            <input type="radio" name="max-number" value="50">
+                            <span class="custom-radio"></span>
+                            50
+                        </label>
+                        <label>
+                            <input type="radio" name="max-number" value="100">
+                            <span class="custom-radio"></span>
+                            100
+                        </label>
+                    </div>
+                    <div class="custom-number">
+                        <label>
+                            <input type="radio" name="max-number" id="custom-max-number-radio" value="custom">
+                            <span class="custom-radio"></span>
+                            Custom:
+                        </label>
+                        <input type="number" id="custom-max-number" min="1" max="1000" value="20">
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Number of Questions</h3>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="question-count" value="10" checked>
+                            <span class="custom-radio"></span>
+                            10
+                        </label>
+                        <label>
+                            <input type="radio" name="question-count" value="20">
+                            <span class="custom-radio"></span>
+                            20
+                        </label>
+                        <label>
+                            <input type="radio" name="question-count" value="30">
+                            <span class="custom-radio"></span>
+                            30
+                        </label>
+                    </div>
+                    <div class="custom-number">
+                        <label>
+                            <input type="radio" name="question-count" id="custom-question-count-radio" value="custom">
+                            <span class="custom-radio"></span>
+                            Custom:
+                        </label>
+                        <input type="number" id="custom-question-count" min="1" max="100" value="10">
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Time Per Question (seconds)</h3>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="time-per-question" value="3">
+                            <span class="custom-radio"></span>
+                            3s
+                        </label>
+                        <label>
+                            <input type="radio" name="time-per-question" value="5">
+                            <span class="custom-radio"></span>
+                            5s
+                        </label>
+                        <label>
+                            <input type="radio" name="time-per-question" value="10" checked>
+                            <span class="custom-radio"></span>
+                            10s
+                        </label>
+                    </div>
+                    <div class="custom-number">
+                        <label>
+                            <input type="radio" name="time-per-question" id="custom-time-radio" value="custom">
+                            <span class="custom-radio"></span>
+                            Custom:
+                        </label>
+                        <input type="number" id="custom-time" min="1" max="60" value="10">
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Difficulty Level</h3>
+                    <div class="difficulty-slider-container">
+                        <span>Easy</span>
+                        <input type="range" id="difficulty-slider" min="1" max="5" value="3" class="difficulty-slider">
+                        <span>Hard</span>
+                    </div>
+                </div>
+
+                <button id="start-game" class="btn btn-primary">Start Practice</button>
+            </section>
+
+            <section id="game-screen" class="screen">
+                <div class="game-header">
+                    <div class="progress-container">
+                        <div class="progress-text">Question <span id="current-question">1</span>/<span
+                                id="total-questions">10</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="timer-container">
+                        <div id="timer-bar" class="timer-bar"></div>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div id="question" class="question">5 + 7 = ?</div>
+                    <div class="answer-container">
+                        <input type="number" id="answer-input" class="answer-input" placeholder="?">
+                        <button id="submit-answer" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+            </section>
+
+            <section id="results-screen" class="screen">
+                <h2>Practice Complete!</h2>
+
+                <div class="results-summary">
+                    <div class="score-container">
+                        <div class="score">
+                            <span id="score">0</span>/<span id="score-total">10</span>
+                        </div>
+                        <div class="stars" id="stars"></div>
+                    </div>
+
+                    <div class="results-stats">
+                        <div>Correct: <span id="correct-count">0</span></div>
+                        <div>Incorrect: <span id="incorrect-count">0</span></div>
+                        <div>Unanswered: <span id="unanswered-count">0</span></div>
+                    </div>
+                </div>
+
+                <div class="results-details">
+                    <h3>Results</h3>
+                    <div id="results-list"></div>
+                </div>
+
+                <div class="results-actions">
+                    <button id="retry-game" class="btn btn-primary">Retry</button>
+                    <button id="new-game" class="btn btn-secondary">Change Settings</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2025 Mira Maths</p>
+        </footer>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/questionGenerator.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

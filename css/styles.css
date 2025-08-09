@@ -1,0 +1,528 @@
+:root {
+    /* Color variables */
+    --primary-color: #4a6bff;
+    --primary-hover: #3550c8;
+    --secondary-color: #ffbb33;
+    --secondary-hover: #e6a012;
+    --light-bg: #f5f7ff;
+    --dark-bg: #242a38;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-light: #ffffff;
+    --success: #4caf50;
+    --warning: #ff9800;
+    --danger: #ff5252;
+    --neutral: #e0e0e0;
+    --border-color: #ddd;
+    
+    /* Font variables */
+    --font-main: 'Comic Neue', cursive;
+    
+    /* Spacing and sizing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --border-radius: 8px;
+    --container-width: 100%;
+    --header-height: 70px;
+}
+
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--text-primary);
+    background-color: var(--light-bg);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.app-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+p {
+    margin-bottom: var(--spacing-md);
+}
+
+/* Header */
+header {
+    padding: var(--spacing-lg) 0;
+    text-align: center;
+}
+
+header p {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    margin-top: -15px;
+}
+
+/* Main content */
+main {
+    flex: 1;
+    padding: var(--spacing-md) 0;
+}
+
+/* Screen management */
+.screen {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Settings screen */
+.settings-group {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    background-color: var(--light-bg);
+}
+
+/* Checkbox and radio custom styles */
+.checkbox-group, .radio-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+@media (min-width: 576px) {
+    .checkbox-group, .radio-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Custom checkboxes */
+.custom-checkbox, .custom-radio {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: var(--spacing-sm);
+    vertical-align: middle;
+    border: 2px solid var(--primary-color);
+    border-radius: 3px;
+}
+
+.custom-radio {
+    border-radius: 50%;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+input[type="checkbox"]:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input[type="radio"]:checked + .custom-radio::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Custom number inputs */
+.custom-number {
+    display: flex;
+    align-items: center;
+    margin-top: var(--spacing-sm);
+}
+
+.custom-number input[type="number"] {
+    width: 60px;
+    margin-left: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+}
+
+/* Difficulty slider */
+.difficulty-slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--spacing-md);
+}
+
+.difficulty-slider {
+    flex: 1;
+    margin: 0 var(--spacing-md);
+    height: 12px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #4caf50, #ffbb33, #ff5252);
+    outline: none;
+    border-radius: 6px;
+}
+
+.difficulty-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--primary-color);
+    cursor: pointer;
+}
+
+.difficulty-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--primary-color);
+    cursor: pointer;
+}
+
+/* Game screen */
+.game-header {
+    margin-bottom: var(--spacing-lg);
+}
+
+.progress-container {
+    margin-bottom: var(--spacing-sm);
+}
+
+.progress-text {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: var(--neutral);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 10%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.timer-container {
+    margin-top: var(--spacing-md);
+}
+
+.timer-bar {
+    height: 10px;
+    background-color: var(--success);
+    border-radius: 5px;
+    width: 100%;
+    transition: width 0.1s linear, background-color 0.3s ease;
+}
+
+.timer-bar.warning {
+    background-color: var(--warning);
+}
+
+.timer-bar.danger {
+    background-color: var(--danger);
+}
+
+.question-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: var(--spacing-xl) 0;
+}
+
+.question {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+    background-color: var(--light-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    min-width: 200px;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.answer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.answer-input {
+    font-size: 2rem;
+    padding: var(--spacing-md);
+    width: 120px;
+    text-align: center;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: var(--font-main);
+}
+
+.answer-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.feedback {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    height: 2rem;
+    margin-top: var(--spacing-lg);
+}
+
+.feedback.correct {
+    color: var(--success);
+}
+
+.feedback.incorrect {
+    color: var(--danger);
+}
+
+/* Results screen */
+.results-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.score-container {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.score {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stars {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-top: var(--spacing-sm);
+}
+
+.results-stats {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: var(--spacing-lg);
+}
+
+.results-details {
+    margin-bottom: var(--spacing-xl);
+}
+
+.results-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius);
+}
+
+.result-item {
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--border-radius);
+}
+
+.result-item.correct {
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.result-item.incorrect {
+    background-color: rgba(255, 82, 82, 0.1);
+}
+
+.result-item.unanswered {
+    background-color: rgba(224, 224, 224, 0.5);
+}
+
+.results-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    text-align: center;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--dark-bg);
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+#start-game {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: var(--spacing-xl) auto;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    :root {
+        --container-width: 90%;
+    }
+    
+    .checkbox-group, .radio-group {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .question {
+        font-size: 4rem;
+    }
+    
+    .results-summary {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+    
+    .score-container {
+        margin-bottom: 0;
+    }
+}
+
+@media (min-width: 992px) {
+    :root {
+        --container-width: 80%;
+    }
+    
+    .checkbox-group, .radio-group {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    .question {
+        font-size: 2.5rem;
+        min-height: 100px;
+    }
+    
+    .answer-input {
+        width: 100px;
+        font-size: 1.5rem;
+    }
+    
+    .results-stats {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        align-items: center;
+    }
+}
