@@ -30,12 +30,30 @@ const Game = {
     init: function(settings) {
         // Store settings
         this.settings = settings;
-        
+
         // Reset game state
         this.questions = [];
         this.currentQuestionIndex = 0;
         this.score = 0;
-        
+
+        // Generate questions
+        this.questions = QuestionGenerator.generateQuestions(settings);
+
+        // Flag game as in progress
+        this.gameInProgress = true;
+
+        // Check practice mode
+        if (settings.practiceMode === 'all-at-once') {
+            this.initAllAtOnceMode();
+        } else {
+            this.initTimedMode();
+        }
+    },
+
+    /**
+     * Initialize timed mode (one-by-one questions)
+     */
+    initTimedMode: function() {
         // Get DOM elements
         this.timerBar = document.getElementById('timer-bar');
         this.questionElement = document.getElementById('question');
@@ -44,20 +62,17 @@ const Game = {
         this.currentQuestionIndicator = document.getElementById('current-question');
         this.totalQuestionsIndicator = document.getElementById('total-questions');
         this.progressFill = document.querySelector('.progress-fill');
-        
-        // Generate questions
-        this.questions = QuestionGenerator.generateQuestions(settings);
-        
+
         // Initialize timer
-        Timer.init(settings.timePerQuestion, this.timerBar, {
+        Timer.init(this.settings.timePerQuestion, this.timerBar, {
             onWarning: () => this.onTimerWarning(),
             onDanger: () => this.onTimerDanger(),
             onComplete: () => this.onTimerComplete()
         });
-        
+
         // Update UI
-        this.totalQuestionsIndicator.textContent = settings.questionCount;
-        
+        this.totalQuestionsIndicator.textContent = this.settings.questionCount;
+
         // Remove previous listeners if they exist
         if (this._submitBtnHandler) {
             document.getElementById('submit-answer').removeEventListener('click', this._submitBtnHandler);
@@ -88,15 +103,119 @@ const Game = {
         document.getElementById('submit-answer').addEventListener('click', this._submitBtnHandler);
         this.answerInput.addEventListener('keydown', this._answerKeydownHandler);
         this.answerInput.addEventListener('input', this._answerInputHandler);
-        
+
         // Show game screen
         Utils.showScreen('game-screen');
-        
+
         // Start with first question
         this.showQuestion(0);
-        
-        // Flag game as in progress
-        this.gameInProgress = true;
+    },
+
+    /**
+     * Initialize all-at-once mode (all questions on one page)
+     */
+    initAllAtOnceMode: function() {
+        // Get container
+        const container = document.getElementById('all-questions-container');
+        container.innerHTML = '';
+
+        // Check if debug mode is enabled
+        const isDebugMode = this.settings.debugMode || false;
+
+        // Update header text if debug mode
+        const headerText = document.querySelector('#all-at-once-screen .all-at-once-header p');
+        if (headerText) {
+            headerText.textContent = isDebugMode
+                ? 'Debug Mode: Difficulty levels shown'
+                : 'Take your time and answer all questions below';
+        }
+
+        // Group questions into columns of 10
+        const questionsPerColumn = 10;
+        const numColumns = Math.ceil(this.questions.length / questionsPerColumn);
+
+        for (let col = 0; col < numColumns; col++) {
+            // Create column box
+            const columnBox = document.createElement('div');
+            columnBox.className = 'question-column';
+
+            // Get questions for this column
+            const startIdx = col * questionsPerColumn;
+            const endIdx = Math.min(startIdx + questionsPerColumn, this.questions.length);
+
+            for (let i = startIdx; i < endIdx; i++) {
+                const question = this.questions[i];
+
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `${i + 1}.`;
+
+                const questionText = document.createElement('span');
+                questionText.className = 'question-text';
+                questionText.textContent = QuestionGenerator.formatQuestion(question);
+
+                const answerInput = document.createElement('input');
+                answerInput.type = 'number';
+                answerInput.className = 'question-answer-input';
+                answerInput.id = `answer-${i}`;
+                answerInput.placeholder = '?';
+
+                questionDiv.appendChild(questionNumber);
+                questionDiv.appendChild(questionText);
+                questionDiv.appendChild(answerInput);
+
+                // Add difficulty badge in debug mode
+                if (isDebugMode) {
+                    const difficultyLevel = QuestionGenerator.getDifficultyLevel(question, this.settings.maxNumber);
+                    const badge = document.createElement('span');
+                    badge.className = `difficulty-badge difficulty-${difficultyLevel}`;
+                    badge.textContent = `L${difficultyLevel}`;
+                    questionDiv.appendChild(badge);
+                }
+
+                columnBox.appendChild(questionDiv);
+            }
+
+            container.appendChild(columnBox);
+        }
+
+        // Setup submit button
+        const submitBtn = document.getElementById('submit-all-answers');
+        submitBtn.onclick = () => this.submitAllAnswers();
+
+        // Show all-at-once screen
+        Utils.showScreen('all-at-once-screen');
+
+        // Focus on first input
+        const firstInput = document.getElementById('answer-0');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    },
+
+    /**
+     * Submit all answers in all-at-once mode
+     */
+    submitAllAnswers: function() {
+        // Collect all answers
+        this.questions.forEach((question, index) => {
+            const input = document.getElementById(`answer-${index}`);
+            const userAnswer = parseInt(input.value);
+
+            question.userAnswer = isNaN(userAnswer) ? null : userAnswer;
+            question.isCorrect = question.userAnswer === question.answer;
+            question.timeElapsed = 0; // No timer in all-at-once mode
+
+            if (question.isCorrect) {
+                this.score++;
+            }
+        });
+
+        // End game and show results
+        this.endGame();
     },
     
     /**
@@ -245,34 +364,35 @@ const Game = {
         }
         document.getElementById('stars').textContent = stars;
         
-        // Display results list
+        // Display results list - show ALL questions with color coding
         const resultsList = document.getElementById('results-list');
         resultsList.innerHTML = '';
-        
-        // Only show incorrect and unanswered questions
-        const problemQuestions = this.questions.filter(q => !q.isCorrect);
-        
-        if (problemQuestions.length === 0) {
-            // Perfect score!
-            const perfectItem = document.createElement('div');
-            perfectItem.className = 'result-item correct';
-            perfectItem.textContent = 'Perfect score! All answers correct!';
-            resultsList.appendChild(perfectItem);
-        } else {
-            // Add each problem question to the results list
-            problemQuestions.forEach((q, index) => {
-                const resultItem = document.createElement('div');
-                resultItem.className = q.userAnswer === null ? 'result-item unanswered' : 'result-item incorrect';
-                
-                const questionText = QuestionGenerator.formatQuestion(q);
-                const correctAnswer = q.answer;
+
+        // Add all questions to the results list
+        this.questions.forEach((q, index) => {
+            const resultItem = document.createElement('div');
+
+            // Determine class based on result
+            if (q.isCorrect) {
+                resultItem.className = 'result-item correct';
+            } else if (q.userAnswer === null) {
+                resultItem.className = 'result-item unanswered';
+            } else {
+                resultItem.className = 'result-item incorrect';
+            }
+
+            const questionText = QuestionGenerator.formatQuestion(q);
+            const correctAnswer = q.answer;
+
+            if (q.isCorrect) {
+                resultItem.textContent = `${index + 1}. ${questionText} ${correctAnswer} ✓`;
+            } else {
                 const userAnswer = q.userAnswer === null ? 'No answer' : q.userAnswer;
-                
                 resultItem.textContent = `${index + 1}. ${questionText} Correct: ${correctAnswer}, Your answer: ${userAnswer}`;
-                
-                resultsList.appendChild(resultItem);
-            });
-        }
+            }
+
+            resultsList.appendChild(resultItem);
+        });
         
         // Show results screen
         Utils.showScreen('results-screen');

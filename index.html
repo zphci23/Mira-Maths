@@ -32,12 +32,12 @@
                             Addition (+)
                         </label>
                         <label>
-                            <input type="checkbox" id="subtraction" name="operation" value="subtraction">
+                            <input type="checkbox" id="subtraction" name="operation" value="subtraction" checked>
                             <span class="custom-checkbox"></span>
                             Subtraction (-)
                         </label>
                         <label>
-                            <input type="checkbox" id="multiplication" name="operation" value="multiplication">
+                            <input type="checkbox" id="multiplication" name="operation" value="multiplication" checked>
                             <span class="custom-checkbox"></span>
                             Multiplication (×)
                         </label>
@@ -145,16 +145,21 @@
                     <h3>Difficulty Level</h3>
                     <div class="difficulty-slider-container">
                         <span>Easy</span>
-                        <input type="range" id="difficulty-slider" min="1" max="5" value="3" class="difficulty-slider">
+                        <input type="range" id="difficulty-slider" min="1" max="5" value="4" class="difficulty-slider">
                         <span>Hard</span>
                     </div>
                 </div>
 
-                <button id="start-game" class="btn btn-primary">Start Practice</button>
+                <div class="start-buttons">
+                    <button id="start-timed" class="btn btn-primary">Start Quiz</button>
+                    <button id="start-worksheet" class="btn btn-secondary">Start Worksheet</button>
+                    <button id="start-debug" class="btn btn-debug">Debug Mode</button>
+                </div>
             </section>
 
             <section id="game-screen" class="screen">
                 <div class="game-header">
+                    <button id="back-from-quiz" class="btn-back">← Back</button>
                     <div class="progress-container">
                         <div class="progress-text">Question <span id="current-question">1</span>/<span
                                 id="total-questions">10</span></div>
@@ -176,6 +181,20 @@
                 </div>
 
                 <div class="feedback" id="feedback"></div>
+            </section>
+
+            <section id="all-at-once-screen" class="screen">
+                <div class="all-at-once-header">
+                    <button id="back-from-worksheet" class="btn-back">← Back</button>
+                    <h2>Complete All Questions</h2>
+                    <p>Take your time and answer all questions below</p>
+                </div>
+
+                <div id="all-questions-container" class="all-questions-container">
+                    <!-- Questions will be dynamically generated here -->
+                </div>
+
+                <button id="submit-all-answers" class="btn btn-primary">Submit All Answers</button>
             </section>
 
             <section id="results-screen" class="screen">

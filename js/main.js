@@ -31,35 +31,35 @@ function setupCustomInputs() {
     // Max number custom input
     const customMaxNumber = document.getElementById('custom-max-number');
     const customMaxNumberRadio = document.getElementById('custom-max-number-radio');
-    
+
     customMaxNumber.addEventListener('focus', () => {
         customMaxNumberRadio.checked = true;
     });
-    
+
     customMaxNumber.addEventListener('input', () => {
         customMaxNumberRadio.checked = true;
     });
-    
+
     // Question count custom input
     const customQuestionCount = document.getElementById('custom-question-count');
     const customQuestionCountRadio = document.getElementById('custom-question-count-radio');
-    
+
     customQuestionCount.addEventListener('focus', () => {
         customQuestionCountRadio.checked = true;
     });
-    
+
     customQuestionCount.addEventListener('input', () => {
         customQuestionCountRadio.checked = true;
     });
-    
+
     // Time per question custom input
     const customTime = document.getElementById('custom-time');
     const customTimeRadio = document.getElementById('custom-time-radio');
-    
+
     customTime.addEventListener('focus', () => {
         customTimeRadio.checked = true;
     });
-    
+
     customTime.addEventListener('input', () => {
         customTimeRadio.checked = true;
     });
@@ -69,18 +69,61 @@ function setupCustomInputs() {
  * Setup event listeners for buttons and user interactions
  */
 function setupEventListeners() {
-    // Start game button
-    document.getElementById('start-game').addEventListener('click', () => {
+    // Start timed mode button
+    document.getElementById('start-timed').addEventListener('click', () => {
         try {
             // Get settings from form
             const settings = Utils.getSettings();
-            
+            settings.practiceMode = 'timed';
+
             // Validate settings
             if (settings.operations.length === 0) {
                 alert('Please select at least one operation.');
                 return;
             }
-            
+
+            // Initialize and start the game
+            Game.init(settings);
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // Start worksheet mode button
+    document.getElementById('start-worksheet').addEventListener('click', () => {
+        try {
+            // Get settings from form
+            const settings = Utils.getSettings();
+            settings.practiceMode = 'all-at-once';
+            settings.debugMode = false;
+
+            // Validate settings
+            if (settings.operations.length === 0) {
+                alert('Please select at least one operation.');
+                return;
+            }
+
+            // Initialize and start the game
+            Game.init(settings);
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // Start debug mode button
+    document.getElementById('start-debug').addEventListener('click', () => {
+        try {
+            // Get settings from form
+            const settings = Utils.getSettings();
+            settings.practiceMode = 'all-at-once';
+            settings.debugMode = true;
+
+            // Validate settings
+            if (settings.operations.length === 0) {
+                alert('Please select at least one operation.');
+                return;
+            }
+
             // Initialize and start the game
             Game.init(settings);
         } catch (error) {
@@ -103,7 +146,17 @@ function setupEventListeners() {
     document.getElementById('new-game').addEventListener('click', () => {
         Utils.showScreen('settings-screen');
     });
-    
+
+    // Back button from quiz screen
+    document.getElementById('back-from-quiz').addEventListener('click', () => {
+        Utils.showScreen('settings-screen');
+    });
+
+    // Back button from worksheet screen
+    document.getElementById('back-from-worksheet').addEventListener('click', () => {
+        Utils.showScreen('settings-screen');
+    });
+
     // Prevent form submission
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', (e) => {

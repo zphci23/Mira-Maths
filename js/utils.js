@@ -64,7 +64,7 @@ const Utils = {
         document.querySelectorAll('input[name="operation"]:checked').forEach(checkbox => {
             operations.push(checkbox.value);
         });
-        
+
         // Get max number
         let maxNumber = 20;
         const maxNumberRadio = document.querySelector('input[name="max-number"]:checked');
@@ -73,7 +73,7 @@ const Utils = {
         } else {
             maxNumber = parseInt(maxNumberRadio.value);
         }
-        
+
         // Get question count
         let questionCount = 10;
         const questionCountRadio = document.querySelector('input[name="question-count"]:checked');
@@ -82,19 +82,21 @@ const Utils = {
         } else {
             questionCount = parseInt(questionCountRadio.value);
         }
-        
+
         // Get time per question
         let timePerQuestion = 10;
         const timeRadio = document.querySelector('input[name="time-per-question"]:checked');
-        if (timeRadio.value === 'custom') {
-            timePerQuestion = parseInt(document.getElementById('custom-time').value) || 10;
-        } else {
-            timePerQuestion = parseInt(timeRadio.value);
+        if (timeRadio) {
+            if (timeRadio.value === 'custom') {
+                timePerQuestion = parseInt(document.getElementById('custom-time').value) || 10;
+            } else {
+                timePerQuestion = parseInt(timeRadio.value);
+            }
         }
-        
+
         // Get difficulty level
         const difficultyLevel = parseInt(document.getElementById('difficulty-slider').value);
-        
+
         return {
             operations,
             maxNumber,

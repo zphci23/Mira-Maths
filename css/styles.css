@@ -100,7 +100,7 @@ main {
 .screen {
     display: none;
     width: 100%;
-    max-width: 800px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: var(--spacing-md);
     background-color: #fff;
@@ -110,6 +110,11 @@ main {
 
 .screen.active {
     display: block;
+}
+
+/* Settings screen keeps narrower width */
+#settings-screen {
+    max-width: 800px;
 }
 
 /* Settings screen */
@@ -236,9 +241,29 @@ input[type="radio"]:checked + .custom-radio::after {
     cursor: pointer;
 }
 
+/* Back button */
+.btn-back {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    transition: color 0.3s ease;
+}
+
+.btn-back:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
 /* Game screen */
 .game-header {
     margin-bottom: var(--spacing-lg);
+    position: relative;
 }
 
 .progress-container {
@@ -393,18 +418,25 @@ input[type="radio"]:checked + .custom-radio::after {
     padding: var(--spacing-sm);
     margin-bottom: var(--spacing-sm);
     border-radius: var(--border-radius);
+    border-left: 4px solid;
 }
 
 .result-item.correct {
-    background-color: rgba(76, 175, 80, 0.1);
+    background-color: rgba(76, 175, 80, 0.15);
+    border-left-color: var(--success);
+    color: #2e7d32;
 }
 
 .result-item.incorrect {
-    background-color: rgba(255, 82, 82, 0.1);
+    background-color: rgba(255, 82, 82, 0.15);
+    border-left-color: var(--danger);
+    color: #c62828;
 }
 
 .result-item.unanswered {
-    background-color: rgba(224, 224, 224, 0.5);
+    background-color: rgba(158, 158, 158, 0.15);
+    border-left-color: #9e9e9e;
+    color: var(--text-secondary);
 }
 
 .results-actions {
@@ -449,13 +481,33 @@ input[type="radio"]:checked + .custom-radio::after {
     background-color: var(--secondary-hover);
 }
 
-#start-game {
-    display: block;
-    width: 100%;
-    max-width: 300px;
+.start-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg);
     margin: var(--spacing-xl) auto;
+    flex-wrap: wrap;
+}
+
+.start-buttons .btn {
+    min-width: 180px;
+    max-width: 250px;
     padding: 1rem 2rem;
     font-size: 1.2rem;
+}
+
+@media (max-width: 576px) {
+    .start-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+
+    .start-buttons .btn {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 /* Footer */
@@ -524,5 +576,182 @@ footer {
         flex-direction: column;
         gap: var(--spacing-sm);
         align-items: center;
+    }
+}
+
+/* All-at-once mode styles */
+.all-at-once-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+}
+
+.all-at-once-header .btn-back {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.all-at-once-header h2 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.all-at-once-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.all-questions-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Column box - contains 10 questions */
+.question-column {
+    background-color: #fff;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 350px;
+    flex: 0 0 auto;
+}
+
+@media (min-width: 768px) {
+    .question-column {
+        width: calc(50% - var(--spacing-lg) / 2);
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 992px) {
+    .question-column {
+        width: calc(33.333% - var(--spacing-lg) * 2 / 3);
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .question-column {
+        width: calc(25% - var(--spacing-lg) * 3 / 4);
+        max-width: 400px;
+    }
+}
+
+.question-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--neutral);
+}
+
+.question-item:last-child {
+    border-bottom: none;
+}
+
+.question-number {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    min-width: 25px;
+}
+
+.question-text {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.question-answer-input {
+    width: 55px;
+    padding: 3px 5px;
+    font-size: 0.95rem;
+    text-align: center;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    font-family: var(--font-main);
+}
+
+.question-answer-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Difficulty badges for debug mode */
+.difficulty-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: var(--spacing-xs);
+    white-space: nowrap;
+}
+
+.difficulty-badge.difficulty-1 {
+    background-color: #4caf50;
+    color: white;
+}
+
+.difficulty-badge.difficulty-2 {
+    background-color: #ff9800;
+    color: white;
+}
+
+.difficulty-badge.difficulty-3 {
+    background-color: #ff5252;
+    color: white;
+}
+
+#submit-all-answers {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: var(--spacing-xl) auto;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+}
+
+/* Debug button styling */
+.btn-debug {
+    background-color: #9c27b0;
+    color: var(--text-light);
+}
+
+.btn-debug:hover {
+    background-color: #7b1fa2;
+}
+
+/* Responsive adjustments for all-at-once mode */
+@media (max-width: 767px) {
+    .all-questions-container {
+        grid-template-columns: 1fr;
+    }
+
+    .question-column {
+        padding: var(--spacing-sm);
+    }
+
+    .question-text {
+        font-size: 0.95rem;
+    }
+
+    .question-answer-input {
+        width: 50px;
+        font-size: 0.9rem;
+    }
+
+    .start-buttons {
+        flex-direction: column;
+    }
+
+    .start-buttons .btn {
+        width: 100%;
+        max-width: 100%;
     }
 }
