@@ -303,7 +303,8 @@ const QuestionGenerator = {
         // - Both numbers less than 6 (5+5, 4+3), OR
         // - Either number is a multiple of 10 (20-7, 10+9), OR
         // - Subtraction where numbers are very close (14-4, 15-5), OR
-        // - Addition where answer is a multiple of 10 (19+11=30, 17+13=30)
+        // - Addition where answer is a multiple of 10 (19+11=30, 17+13=30), OR
+        // - Addition where both ones digits are the same (16+6, 18+8, 13+3)
         if ((num1 % 10 === 0 && num2 % 10 === 0) || (num1 < 6 && num2 < 6)) {
             return 2;
         }
@@ -318,18 +319,28 @@ const QuestionGenerator = {
             return 2;
         }
 
+        // Addition where both ones digits are the same (16+6, 18+8, 13+3)
+        if (operation === 'addition' && (num1 % 10 === num2 || num2 % 10 === num1)) {
+            return 2;
+        }
+
         // Subtraction where the second number matches the ones digit (14-4, 17-7)
         if (operation === 'subtraction' && num1 % 10 === num2) {
             return 2;
         }
 
-        // Very small answers in subtraction
-        if (operation === 'subtraction' && answer < 5) {
+        // Subtraction with small answers (easier to verify)
+        if (operation === 'subtraction' && answer <= 5) {
+            return 2;
+        }
+
+        // Subtraction where numbers are close together (18-13, 16-11, 19-14)
+        if (operation === 'subtraction' && (num1 - num2) <= 10) {
             return 2;
         }
 
         // Level 3 (Hard): Everything else
-        // This includes questions like 17-9, 13+18, 15-8, 12+16
+        // This includes questions like 17-9, 25-8, 23-6, 20-7
         return 3;
     },
     
