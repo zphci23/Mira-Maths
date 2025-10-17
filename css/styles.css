@@ -721,6 +721,7 @@ footer {
 .btn-debug {
     background-color: #9c27b0;
     color: var(--text-light);
+    display: none; /* Hidden by default - remove this line to show debug mode */
 }
 
 .btn-debug:hover {
