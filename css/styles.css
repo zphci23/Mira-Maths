@@ -584,6 +584,7 @@ footer {
     text-align: center;
     margin-bottom: var(--spacing-xl);
     position: relative;
+    padding-top: var(--spacing-lg);
 }
 
 .all-at-once-header .btn-back {
@@ -599,6 +600,21 @@ footer {
 .all-at-once-header p {
     color: var(--text-secondary);
     font-size: 1.1rem;
+}
+
+/* Mobile adjustment for header */
+@media (max-width: 576px) {
+    .all-at-once-header {
+        padding-top: calc(var(--spacing-lg) + var(--spacing-md));
+    }
+
+    .all-at-once-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .all-at-once-header p {
+        font-size: 0.95rem;
+    }
 }
 
 .all-questions-container {
