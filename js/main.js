@@ -134,8 +134,12 @@ function setupEventListeners() {
     // Retry button
     document.getElementById('retry-game').addEventListener('click', () => {
         try {
-            // Get the same settings and start a new game
+            // Get the same settings and start a new game with the same mode
             const settings = Utils.getSettings();
+            // Use the last used mode (timed or all-at-once)
+            settings.practiceMode = Game.lastUsedMode || 'timed';
+            // Preserve debugMode if it was used
+            settings.debugMode = Game.settings?.debugMode || false;
             Game.init(settings);
         } catch (error) {
             alert(error.message);

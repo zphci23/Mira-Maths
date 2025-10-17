@@ -13,6 +13,7 @@ const Game = {
     currentQuestionIndex: 0,
     score: 0,
     gameInProgress: false,
+    lastUsedMode: null, // Track last practice mode for retry
     
     // DOM elements
     timerBar: null,
@@ -28,8 +29,9 @@ const Game = {
      * @param {Object} settings - Game settings
      */
     init: function(settings) {
-        // Store settings
+        // Store settings and remember the mode for retry
         this.settings = settings;
+        this.lastUsedMode = settings.practiceMode;
 
         // Reset game state
         this.questions = [];
