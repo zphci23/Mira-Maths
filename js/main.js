@@ -90,6 +90,7 @@ function setupEventListeners() {
     });
 
     // Start worksheet mode button
+    /*
     document.getElementById('start-worksheet').addEventListener('click', () => {
         try {
             // Get settings from form
@@ -109,6 +110,7 @@ function setupEventListeners() {
             alert(error.message);
         }
     });
+    */
 
     // Start debug mode button
     document.getElementById('start-debug').addEventListener('click', () => {
@@ -157,9 +159,11 @@ function setupEventListeners() {
     });
 
     // Back button from worksheet screen
+    /*
     document.getElementById('back-from-worksheet').addEventListener('click', () => {
         Utils.showScreen('settings-screen');
     });
+    */
 
     // Prevent form submission
     document.querySelectorAll('form').forEach(form => {
